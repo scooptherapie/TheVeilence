@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Veilence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Dancing+Script:wght@500;700&family=Special+Elite&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-deep:#141b26;
+    --bg-panel:#39485a;
+    --bg-panel-2:#2b3847;
+    --bg-mist:#7f97a6;
+    --ink-light:#eef1ec;
+    --ink-soft:#b7c3cb;
+    --paper:#f2eee2;
+    --paper-ink:#2a2f26;
+    --line:rgba(238,241,236,0.16);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(ellipse at 15% 0%, #3a4a5c 0%, transparent 55%),
+      radial-gradient(ellipse at 85% 10%, #1c2431 0%, transparent 50%),
+      var(--bg-deep);
+    color:var(--ink-light);
+    font-family:'Cormorant Garamond', serif;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+    overflow-x:hidden;
+  }
+  a{color:inherit;}
+  img{max-width:100%;}
+
+  /* ---------- NAV ---------- */
+  nav{
+    position:sticky;top:env(safe-area-inset-top,0px);
+    z-index:50;
+    display:flex;flex-wrap:wrap;gap:clamp(14px,3vw,34px);
+    justify-content:center;
+    padding:18px 20px;
+    background:rgba(20,27,38,0.72);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--line);
+  }
+  nav a{
+    font-size:15px;letter-spacing:0.06em;
+    text-decoration:none;color:var(--ink-soft);
+    font-weight:500;
+    padding-bottom:3px;border-bottom:1px solid transparent;
+    transition:color .2s, border-color .2s;
+  }
+  nav a:hover, nav a:focus-visible{color:var(--ink-light);border-color:var(--ink-light);}
+
+  section{padding:70px 6vw;position:relative;}
+  .wrap{max-width:920px;margin:0 auto;}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    text-align:center;
+    padding-top:64px;
+  }
+  .hero h1{
+    font-family:'Dancing Script',cursive;
+    font-weight:700;
+    font-size:clamp(48px,9vw,104px);
+    margin:0 0 8px;
+    line-height:1;
+    text-shadow:0 2px 24px rgba(0,0,0,0.35);
+  }
+  .hero .subline{
+    color:var(--ink-soft);
+    font-style:italic;
+    font-size:clamp(15px,2vw,19px);
+    margin-bottom:40px;
+  }
+
+  .panel{
+    background:var(--bg-panel);
+    border-radius:18px;
+    padding:clamp(26px,4vw,46px);
+    text-align:left;
+    box-shadow:0 20px 50px rgba(0,0,0,0.35);
+  }
+  .panel p{
+    font-size:clamp(16px,1.6vw,19px);
+    line-height:1.85;
+    color:var(--ink-light);
+    margin:0;
+  }
+
+  /* ---------- SECTION HEADINGS ---------- */
+  .section-head{margin-bottom:34px;}
+  .section-head .eyebrow{
+    font-family:'Special Elite',monospace;
+    font-size:12px;color:var(--ink-soft);
+    letter-spacing:0.08em;
+    display:block;margin-bottom:6px;
+  }
+  .section-head h2{
+    font-family:'Dancing Script',cursive;
+    font-weight:700;
+    font-size:clamp(34px,5vw,54px);
+    margin:0;
+  }
+
+  /* ---------- AUDIO PLAYER ---------- */
+  .player{
+    display:flex;align-items:center;gap:18px;
+    background:var(--bg-panel-2);
+    border-radius:16px;
+    padding:16px 22px;
+    margin:36px auto 0;
+    max-width:560px;
+    box-shadow:0 14px 30px rgba(0,0,0,0.3);
+  }
+  .player button{
+    flex:0 0 auto;
+    width:46px;height:46px;border-radius:50%;
+    border:1px solid var(--line);
+    background:var(--bg-mist);
+    color:var(--bg-deep);
+    font-size:16px;
+    cursor:pointer;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .player button:hover{filter:brightness(1.08);}
+  .player .meta{flex:1;text-align:left;min-width:0;}
+  .player .meta .track{
+    font-family:'Special Elite',monospace;
+    font-size:13px;color:var(--ink-light);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .player .meta .track-sub{
+    font-size:12px;color:var(--ink-soft);
+  }
+  .player .bars{display:flex;gap:3px;align-items:flex-end;height:20px;}
+  .player .bars span{
+    width:3px;background:var(--ink-soft);border-radius:2px;
+    animation:bar 1.1s ease-in-out infinite;
+    animation-play-state:paused;
+  }
+  .player.playing .bars span{animation-play-state:running;}
+  .player .bars span:nth-child(1){height:6px;animation-delay:0s;}
+  .player .bars span:nth-child(2){height:16px;animation-delay:.15s;}
+  .player .bars span:nth-child(3){height:10px;animation-delay:.3s;}
+  .player .bars span:nth-child(4){height:18px;animation-delay:.45s;}
+  @keyframes bar{0%,100%{transform:scaleY(0.4);}50%{transform:scaleY(1);}}
+  .player-note{
+    text-align:center;color:var(--ink-soft);font-size:12.5px;
+    margin-top:10px;font-family:'Special Elite',monospace;
+    max-width:560px;margin-left:auto;margin-right:auto;
+  }
+
+  /* ---------- CONCEPT ---------- */
+  #concept .panel p + p{margin-top:16px;}
+
+  /* ---------- CARETAKERS ---------- */
+  .caretakers-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+    gap:28px;
+  }
+  .caretaker-card{text-align:center;}
+  .photo-slot{
+    aspect-ratio:4/5;
+    border-radius:4px;
+    background:var(--bg-panel-2);
+    border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;
+    position:relative;
+    margin-bottom:14px;
+    transform:rotate(var(--tilt,0deg));
+    box-shadow:0 14px 26px rgba(0,0,0,0.35);
+  }
+  .caretaker-card:nth-child(1) .photo-slot{--tilt:-2.5deg;}
+  .caretaker-card:nth-child(2) .photo-slot{--tilt:1.5deg;}
+  .caretaker-card:nth-child(3) .photo-slot{--tilt:-1.5deg;}
+  .caretaker-card:nth-child(4) .photo-slot{--tilt:2.5deg;}
+  .photo-slot .plus{
+    font-size:34px;color:var(--ink-soft);font-weight:300;
+  }
+  .photo-slot .tape{
+    position:absolute;top:-10px;left:50%;transform:translateX(-50%) rotate(-3deg);
+    width:64px;height:22px;
+    background:rgba(238,241,236,0.18);
+    border:1px solid rgba(238,241,236,0.25);
+  }
+  .caretaker-card .role{
+    font-family:'Special Elite',monospace;
+    font-size:11px;letter-spacing:0.08em;color:var(--ink-soft);
+    margin-bottom:4px;
+  }
+  .caretaker-card .name{
+    font-size:20px;color:var(--ink-light);
+  }
+
+  /* ---------- RULES ---------- */
+  .rules-list{list-style:none;margin:0;padding:0;counter-reset:rule;}
+  .rules-list li{
+    counter-increment:rule;
+    display:flex;gap:18px;
+    padding:18px 0;
+    border-bottom:1px solid var(--line);
+    font-size:clamp(16px,1.6vw,18px);
+    line-height:1.7;
+  }
+  .rules-list li:last-child{border-bottom:none;}
+  .rules-list li::before{
+    content:counter(rule,decimal-leading-zero);
+    font-family:'Special Elite',monospace;
+    color:var(--ink-soft);
+    flex:0 0 auto;
+    padding-top:2px;
+  }
+
+  /* ---------- UNVERIFICATION ---------- */
+  .note-strip{
+    display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-bottom:8px;
+  }
+  .note{
+    background:var(--paper);
+    color:var(--paper-ink);
+    font-family:'Special Elite',monospace;
+    font-size:13px;
+    padding:10px 16px;
+    box-shadow:0 8px 16px rgba(0,0,0,0.3);
+  }
+  .note:nth-child(odd){transform:rotate(-2deg);}
+  .note:nth-child(even){transform:rotate(1.5deg);}
+
+  /* ---------- OUR MEMBER (coming soon) ---------- */
+  .coming-soon-tag{
+    display:inline-block;
+    font-family:'Special Elite',monospace;
+    font-size:11px;letter-spacing:0.08em;
+    color:var(--bg-deep);
+    background:var(--bg-mist);
+    padding:4px 12px;
+    border-radius:20px;
+    margin-bottom:34px;
+  }
+  .photo-slot.empty{
+    background:repeating-linear-gradient(
+      135deg,
+      var(--bg-panel-2),
+      var(--bg-panel-2) 10px,
+      #24303e 10px,
+      #24303e 20px
+    );
+  }
+  .caretaker-card .name.tba{
+    color:var(--ink-soft);
+    font-style:italic;
+    font-size:17px;
+  }
+
+  footer{
+    text-align:center;
+    padding:40px 20px calc(40px + env(safe-area-inset-bottom,0px));
+    color:var(--ink-soft);
+    font-size:13px;
+    font-family:'Special Elite',monospace;
+    border-top:1px solid var(--line);
+  }
+
+  ::selection{background:var(--bg-mist);color:var(--bg-deep);}
+  @media (prefers-reduced-motion:reduce){
+    .player .bars span{animation:none;}
+    html{scroll-behavior:auto;}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#home">Home</a>
+  <a href="#concept">Concept</a>
+  <a href="#caretakers">Luminars</a>
+  <a href="#rules">General Rules</a>
+  <a href="#activity">Activity & Status</a>
+  <a href="#unverification">Warnings & Unverification</a>
+  <a href="#member">Our Member</a>
+</nav>
+
+<section id="home" class="hero">
+  <div class="wrap">
+    <h1>The Veilence</h1>
+    <p class="subline">A conversation with everything I tried to leave behind, the things I never said, and the parts of myself I never showed.</p>
+
+    <div class="panel">
+      <p>Looking back on the things we've done, we may find parts of ourselves we wish we could change. We may realize how long we've been playing a part, keeping the truth in the dark. But the past does not have to be the end of our story. So this time, instead of hiding behind who we used to be, let us face every mistake, every regret, and every part of ourselves we've tried to conceal. Now, let me show you the shape of my heart.</p>
+    </div>
+
+    <div class="player" id="player">
+      <button id="playBtn" aria-label="putar lagu">&#9658;</button>
+      <div class="meta">
+        <div class="track">Shape of My Heart</div>
+        <div class="track-sub">— Backstreet Boys</div>
+      </div>
+      <div class="bars"><span></span><span></span><span></span><span></span></div>
+      <audio id="audio" preload="none" loop>
+        <!-- ganti src di bawah dengan link/file lagu kamu -->
+        <source src="assets/shapeofmyheart.mp3" type="audio/mpeg">
+      </audio>
+    </div>
+    <p class="player-note">Click to start the music</p>
+  </div>
+</section>
+
+<section id="concept">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">// 01</span>
+      <h2>The Concept</h2>
+    </div>
+    <div class="panel">
+      <p>The Veilence is a concept inspired by the meaning of “Shape of My Heart,” exploring the journey of looking back, facing our mistakes, and revealing the parts of ourselves we once chose to hide. The “veil” represents the layers we create to conceal our regrets, emotions, flaws, and the versions of ourselves we were afraid to show. Like the feeling of having played a part and kept the truth in the dark, we sometimes become someone we think we are supposed to be, while slowly losing sight of who we truly are.</p>
+    <p>Yet change begins when we have the courage to lift that veil and face what lies beneath it. The Veilence is not about erasing the past or becoming someone completely new. It is about accepting every mistake, understanding every regret, and acknowledging the experiences that shaped us.</p>
+    <p>Because perhaps knowing ourselves means looking back at who we were without turning away from what we see. We are not defined by the things we wish we could change, but by our willingness to face them, learn from them, and move forward.</p>
+    <p>And when there is nothing left to hide, what remains is the shape of our heart—the truth of who we have always been beneath it all.</p>
+    </div>
+  </div>
+</section>
+
+<section id="caretakers">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">// 02</span>
+      <h2>The Luminars</h2>
+    </div>
+    <div class="caretakers-grid">
+      <div class="caretaker-card">
+        <div class="photo-slot"><div class="tape"></div>
+        <img src="assets/LuciRahandika.jpg" alt="Luci Rahandika">
+        </div>
+        <div class="role">The Curator</div>
+        <div class="name">Luci Rahandika</div>
+      </div>
+      <div class="caretaker-card">
+        <div class="photo-slot"><div class="tape"></div>
+        <img src="assets/AlsakiMadhava.jpg" alt="Alsaki Madhava">
+        </div>
+        <div class="role">The Archivist</div>
+        <div class="name">Alsaki Madhava</div>
+      </div>
+      <div class="caretaker-card">
+        <div class="photo-slot"><div class="tape"></div>
+        <img src="assets/GauriAdwitya.jpg" alt="Gauri Adwitya">
+        </div>
+        <div class="role">The Scribe</div>
+        <div class="name">Gauri Adwitya</div>
+      </div>
+      <div class="caretaker-card">
+        <div class="photo-slot"><div class="tape"></div>
+        <img src="assets/GamadiCaraka.jpg" alt="Gamadi Caraka">
+        </div>
+        <div class="role">The Architect</div>
+        <div class="name">Gamadi Caraka</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="rules">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">// 03</span>
+      <h2>General Rules</h2>
+    </div>
+    <div class="panel">
+      <ol class="rules-list">
+        <li>We welcome Gen!RP and Selective accounts. One head per account; side accounts are allowed as long as they remain active alongside the main. Username, display name, and bio must stay relevant to your muse.</li>
+        <li>A maximum of 3 OAs, including TheVeilence, and 2 SQs is allowed. Group DMs do not count. Keep your following under 500; new accounts should have at least 250 tweets and 50 followings.</li>
+        <li>Manual updates and official retweets are both accepted. Manual updates are highly encouraged as part of keeping your muse active. Official retweets are accepted, but personal updates are always preferred.</li>
+        <li>Interact with at least 7 Wanderers daily and avoid CIC habits. We encourage a wide circle and active participation throughout the OA.</li>
+        <li>JFB, nickname/upfoll schemes, bots, and drama-seeking are not allowed. Keep RL matters inside brackets and refrain from interacting with non-RP content.</li>
+        <li>NSFW content of any kind is strictly prohibited. Respect your fellow Wanderers, Luminars, and other spaces. Keep the environment comfortable for everyone.</li>
+        <li>Participation in missions and activities is required. If real life gets busy, let us know beforehand.</li>
+        <li>Upon verification, follow our main base, sub-base, and fellow OAs. Keep your presence here genuine, respectful, and within the spirit of the space.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section id="activity">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">// 04</span>
+      <h2>Activity & Status</h2>
+    </div>
+    <div class="panel">
+      <ol class="rules-list">
+        <li>Semi-hiatus is limited to 3 days, while hiatus is limited to 5 days. Longer breaks will not be accommodated.</li>
+        <li>Temporary character swaps are allowed once during the OA period, excluding swaps made for other OA missions. Account moves are permitted twice, with exceptions only for suspended or locked accounts.</li>
+        <li>Keep us informed of any changes to your username, character, or account. Username/account moves should be updated within 1 week after verification, while character changes should be made within 3 days.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section id="unverification">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">// 05</span>
+      <h2>Warnings & Unverification</h2>
+    </div>
+    <div class="panel">
+      <ol class="rules-list">
+      <li>Drama, CIC, war, or deliberate rule-breaking may result in immediate unverification.</li>
+      <li>Inactivity for 24 hours after verification or after a hiatus ends, as well as 72 hours of inactivity without notice, will result in unverification. Deactivation without notice must be reported within 24 hours to avoid the same consequence.</li>
+      <li>Missing two activities or missions without notice will result in a warning.</li>
+      <li>Three warnings will lead to unverification.</li>
+      </ol>
+    </div>
+    <div class="note-strip" style="margin-top:28px;">
+      <div class="note">My Darling...</div>
+      <div class="note">all I want is to be your moon</div>
+      <div class="note">and show you all the little stars of my heart</div>
+    </div>
+  </div>
+</section>
+
+<section id="member">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">// 06</span>
+      <h2>Our Member</h2>
+    </div>
+    <span class="coming-soon-tag">coming soon</span>
+    <div class="caretakers-grid">
+      <div class="caretaker-card">
+        <div class="photo-slot empty"><div class="tape"></div></div>
+        <div class="role">Our Member</div>
+        <div class="name tba">TBA</div>
+      </div>
+      <div class="caretaker-card">
+        <div class="photo-slot empty"><div class="tape"></div></div>
+        <div class="role">Our Member</div>
+        <div class="name tba">TBA</div>
+      </div>
+      <div class="caretaker-card">
+        <div class="photo-slot empty"><div class="tape"></div></div>
+        <div class="role">Our Member</div>
+        <div class="name tba">TBA</div>
+      </div>
+      <div class="caretaker-card">
+        <div class="photo-slot empty"><div class="tape"></div></div>
+        <div class="role">Our Member</div>
+        <div class="name tba">TBA</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  © 2026 All Rights Reserved by The Veilience
+</footer>
+
+<script>
+  const audio = document.getElementById('audio');
+  const btn = document.getElementById('playBtn');
+  const player = document.getElementById('player');
+  btn.addEventListener('click', () => {
+    if(audio.paused){
+      audio.play().catch(()=>{});
+      btn.innerHTML = '&#10074;&#10074;';
+      player.classList.add('playing');
+    } else {
+      audio.pause();
+      btn.innerHTML = '&#9658;';
+      player.classList.remove('playing');
+    }
+  });
+  audio.addEventListener('ended', () => {
+    btn.innerHTML = '&#9658;';
+    player.classList.remove('playing');
+  });
+</script>
+
+</body>
+</html>
